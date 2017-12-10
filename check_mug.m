@@ -3,18 +3,22 @@ load('coeff')
 
 colormap gray;
 for i = 1:9
-    subplot(3, 6, i);
+    subplot(6, 3, i);
    imagesc(reshape(coeff(:, i), 64, 64)); 
 end
 
+tIm = im2double(imresize(rgb2gray(imread('mug2.jpg')), [64 64]));
 
-testIm = reshape(im2double(imresize(rgb2gray(imread('mug.jpg')), [64 64])), 1, 4096);
+testIm = reshape(tIm, 1, 4096);
 
-res = testIm * coeff;
+res = (testIm - mean(testIm)) * coeff;
 
+tt = mean(testIm) + res * coeff';
 
+err = norm(testIm - tt);
 colormap gray;
-for i = 1:9
-    subplot(3, 6, 6 + i);
-   imagesc(reshape(re(:, i), 64, 64)); 
-end
+
+subplot(6, 3, 10);
+imagesc(tIm);
+subplot(6, 3, 11);
+imagesc(reshape(tt, 64, 64));
