@@ -7,18 +7,40 @@ for i = 1:9
    imagesc(reshape(coeff(:, i), 64, 64)); 
 end
 
-tIm = im2double(imresize(rgb2gray(imread('mug2.jpg')), [64 64]));
 
-testIm = reshape(tIm, 1, 4096);
+preTestImage = im2double(rgb2gray(imread('mug2.jpg')));
 
-res = (testIm - mean(testIm)) * coeff;
+[M, N] = size(preTestImage);
+mErr = 90;
+bestW = [];
+for i = 1:16:M
+    for j = 1:16:N
+        if (i + 63 > M || j + 63 > N)
+            break;
+        end
+        w = preTestImage(i:i+63, j:j+63);
+        wMean = w - mean(mean(w));
+        testIm = reshape(wMean, 1, 4096);
 
-tt = mean(testIm) + res * coeff';
+        res = (testIm) * (coeff);
 
-err = norm(testIm - tt);
+        tt = mean(mean(w)) + coeff * res';
+
+        err = norm(testIm - tt);
+        
+        if (err < mErr)
+            mErr = err;
+            bestW = w;
+            %subplot(6, 3, 10);
+            %imagesc(w);
+        end
+        
+    end
+end
+
+
+
 colormap gray;
 
-subplot(6, 3, 10);
-imagesc(tIm);
 subplot(6, 3, 11);
-imagesc(reshape(tt, 64, 64));
+imagesc(w);
