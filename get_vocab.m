@@ -9,6 +9,7 @@ for i = 1:1198
     try
     x = im2double(rgb2gray(readimage(imds, i)));
     x = imresize(x, [64 64]);
+    x = x - mean2(x);
     x = reshape(imresize(x, [64 64]), 1, 4096);
     ims = [ims; x];
     catch
@@ -17,7 +18,7 @@ for i = 1:1198
     %imshow(x);
 end
 
-coeff = pca(ims, 'NumComponents', 9);
+coeff = pca(ims, 'NumComponents', 3);
 
 save('coeff.mat', 'coeff')
 
