@@ -8,7 +8,7 @@ for i = 1:6
 end
 
 
-preTestImage = imresize(im2double(rgb2gray(imread('mugT6.jpg'))), [96, 96]);
+preTestImage = imresize(im2double(rgb2gray(imread('mug5.jpg'))), [96, 96]);
 
 [M, N] = size(preTestImage);
 mErr = 90000.0;

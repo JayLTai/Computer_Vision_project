@@ -1,22 +1,10 @@
+
+function[cx,cy, d] = feature_match(trainImage,testImage)
 load('coeff');
 
-trainImage = im2double(rgb2gray(imread('train2.jpg')));
-%trainImage = reshape(coeff(:, 1), 64, 64);
-testImage = imresize(im2double(rgb2gray(imread('testClose.tif'))), [1024, 1024]);
+
 boxPoints = detectSURFFeatures(trainImage);
 scenePoints = detectSURFFeatures(testImage);
-
-figure;
-imshow(trainImage);
-title('100 Strongest Feature Points from Box Image');
-hold on;
-plot(selectStrongest(boxPoints, 100));
-
-figure;
-imshow(testImage);
-title('300 Strongest Feature Points from Scene Image');
-hold on;
-plot(selectStrongest(scenePoints, 300));
 
 
 [boxFeatures, boxPoints] = extractFeatures(trainImage, boxPoints);
@@ -40,14 +28,17 @@ boxPolygon = [1, 1;...                           % top-left
         1, 1];                   % top-left again to close the polygon
     
     newBoxPolygon = transformPointsForward(tform, boxPolygon);
-    centroid = [];
     centroid = mean(newBoxPolygon);%center(newBoxPolygon);
-    cX = centroid(1);
-    cY = centroid(2);
+    cx = centroid(1);
+    cy = centroid(2);
+    
+    d = 2*abs(cx - min(newBoxPolygon(:, 1)));
 figure;
 imshow(testImage);
 hold on;
 line(newBoxPolygon(:, 1), newBoxPolygon(:, 2), 'Color', 'y');
-plot(cX, cY, 'r*', 'LineWidth', 2, 'MarkerSize', 15);
+plot(cx, cy, 'r*', 'LineWidth', 2, 'MarkerSize', 15);
 title('Detected Box');
 hold off;
+
+end
